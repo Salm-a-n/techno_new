@@ -351,11 +351,11 @@ useGSAP(() => {
           Technology
         </h1>
 
-        <p className="text-gray-100 text-lg md:text-xl max-w-2xl mb-10 leading-relaxed mx-auto font-light" style={{
-          textShadow: '0 0 30px rgba(0,0,0,0.7), 0 4px 16px rgba(0,0,0,0.5)'
-        }}>
-          We build innovative software, cloud, and AI solutions that help businesses scale, streamline operations, and achieve sustainable growth.
-        </p>
+    <p className="text-transparent bg-clip-text bg-gradient-to-r from-white via-amber-400 to-white text-lg md:text-xl max-w-2xl mb-10 leading-relaxed mx-auto font-medium" style={{
+  textShadow: '0 4px 16px rgba(0,0,0,0.5)'
+}}>
+  We build innovative software, cloud, and AI solutions that help businesses scale, streamline operations, and achieve sustainable growth.
+</p>
 
         <div className="flex items-center gap-4 z-20">
           <button className="px-8 py-3.5 rounded-full bg-white text-black font-semibold transition-all hover:scale-105 flex items-center gap-2 shadow-[0_0_30px_rgba(255,255,255,0.3)]">

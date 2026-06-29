@@ -124,12 +124,12 @@ export default function Navbar() {
   
   {/* Add your public image here */}
   <img 
-    src="/logo.jpeg" 
+    src="/newlogo.png" 
     alt="TechnoTech Logo" 
     className="w-8 h-8 object-contain group-hover:scale-105 transition-transform duration-300" 
   />
   
-  <span className="text-xl font-bold text-white tracking-tight">TechnoTech</span>
+  {/* <span className="text-xl font-bold text-white tracking-tight">TechnoTech</span> */}
 </a>
 
           {/* 2. CENTER: ANIMATED NAV LINKS (Desktop) */}
