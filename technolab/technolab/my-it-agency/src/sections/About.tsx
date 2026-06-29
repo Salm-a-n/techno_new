@@ -73,7 +73,7 @@ export default function About() {
     );
 
     // 3. Staggered Scale-Pop for the Grid Items
-    gridRefs.current.forEach((card, i) => {
+    gridRefs.current.forEach((card) => { // <--- Removed the unused 'i'
       gsap.fromTo(card,
         { 
           scale: 0.5, 
@@ -85,11 +85,10 @@ export default function About() {
           opacity: 1,
           y: 0,
           duration: 1,
-          ease: "back.out(1.5)", // Bouncy scale effect
+          ease: "back.out(1.5)", 
           scrollTrigger: {
             trigger: card,
             start: "top 85%",
-            // Using a slightly different start for each card to create a natural stagger
             toggleActions: "play none none reverse" 
           }
         }
