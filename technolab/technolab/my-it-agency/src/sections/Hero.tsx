@@ -1,4 +1,4 @@
-import { useRef, useMemo, useEffect } from 'react';
+import { useRef, useMemo, useEffect, useState } from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Points, PointMaterial, Preload } from '@react-three/drei';
@@ -7,15 +7,14 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 
-// Register GSAP ScrollTrigger
 gsap.registerPlugin(ScrollTrigger);
 
 // ============================================================================
-// FIBONACCI SPHERE GENERATOR - Creates evenly distributed particle points
+// OPTIMIZED FIBONACCI SPHERE - Same quality, fewer points
 // ============================================================================
 const generateFibonacciSphere = (count: number, radius: number = 1) => {
   const positions = new Float32Array(count * 3);
-  const phi = Math.PI * (3 - Math.sqrt(5)); // Golden angle
+  const phi = Math.PI * (3 - Math.sqrt(5));
 
   for (let i = 0; i < count; i++) {
     const y = 1 - (i / (count - 1)) * 2;
@@ -31,12 +30,11 @@ const generateFibonacciSphere = (count: number, radius: number = 1) => {
 };
 
 // ============================================================================
-// ATMOSPHERE - Subtle transparent glow around the globe
+// ATMOSPHERE
 // ============================================================================
 const Atmosphere = () => {
   const atmosphereRef = useRef<THREE.Mesh>(null);
 
-  // Replaced unused 'state' with '_' for TypeScript strict mode
   useFrame((_, delta) => {
     if (atmosphereRef.current) {
       atmosphereRef.current.rotation.y += delta * 0.02;
@@ -45,7 +43,7 @@ const Atmosphere = () => {
 
   return (
     <mesh ref={atmosphereRef} scale={1.15}>
-      <sphereGeometry args={[1, 64, 64]} />
+      <sphereGeometry args={[1, 32, 32]} />
       <meshPhongMaterial
         emissive={new THREE.Color(0x4f46e5)}
         emissiveIntensity={0.15}
@@ -59,19 +57,19 @@ const Atmosphere = () => {
 };
 
 // ============================================================================
-// FLOATING PARTICLES - Orbiting particles around the globe
+// FLOATING PARTICLES - REDUCED
 // ============================================================================
 const FloatingParticles = () => {
   const pointsRef = useRef<THREE.Points>(null);
 
   const orbitalPositions = useMemo(() => {
-    const count = 400; // Increased particle count slightly for density
+    const count = 200; // Reduced from 400
     const positions = new Float32Array(count * 3);
 
     for (let i = 0; i < count; i++) {
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.random() * Math.PI * 2;
-      const radius = 2.4 + Math.random() * 1.2; // Wider spread
+      const radius = 2.4 + Math.random() * 1.2;
 
       positions[i * 3] = Math.cos(theta) * Math.sin(phi) * radius;
       positions[i * 3 + 1] = Math.sin(theta) * radius;
@@ -83,7 +81,6 @@ const FloatingParticles = () => {
 
   useFrame((state, delta) => {
     if (pointsRef.current) {
-      // Fluid, multi-axis organic movement
       pointsRef.current.rotation.y += delta * 0.03;
       pointsRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.2) * 0.1;
       pointsRef.current.rotation.z = Math.cos(state.clock.elapsedTime * 0.15) * 0.1;
@@ -95,7 +92,7 @@ const FloatingParticles = () => {
       <PointMaterial
         transparent
         color={new THREE.Color(0x00d9ff)}
-        size={0.02}
+        size={0.025}
         sizeAttenuation={true}
         depthWrite={false}
         blending={THREE.AdditiveBlending}
@@ -106,28 +103,23 @@ const FloatingParticles = () => {
 };
 
 // ============================================================================
-// CORE GLOBE PARTICLES - Now with a "breathing" and shifting core
+// CORE GLOBE PARTICLES - REDUCED
 // ============================================================================
 const CoreGlobeParticles = () => {
   const pointsRef = useRef<THREE.Points>(null);
   const groupRef = useRef<THREE.Group>(null);
 
-  const corePositions = useMemo(() => generateFibonacciSphere(3500, 1), []);
-  const secondLayerPositions = useMemo(() => generateFibonacciSphere(1500, 0.75), []);
+  // Reduced: 3500 -> 2000, 1500 -> 800
+  const corePositions = useMemo(() => generateFibonacciSphere(2000, 1), []);
+  const secondLayerPositions = useMemo(() => generateFibonacciSphere(800, 0.75), []);
 
   useFrame((state, delta) => {
     if (groupRef.current && pointsRef.current) {
-      // Constant smooth rotation
       groupRef.current.rotation.y += delta * 0.025;
-      
-      // Complex gyroscopic tilt
       groupRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3) * 0.2;
       groupRef.current.rotation.z = Math.cos(state.clock.elapsedTime * 0.2) * 0.1;
-
-      // Gentle floating movement on Y axis (levitation effect)
       groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.6) * 0.08;
 
-      // Dynamic core breathing (scale pulses gently)
       const breathe = 1 + Math.sin(state.clock.elapsedTime * 1.2) * 0.03;
       groupRef.current.scale.set(breathe, breathe, breathe);
     }
@@ -135,12 +127,11 @@ const CoreGlobeParticles = () => {
 
   return (
     <group ref={groupRef}>
-      {/* Main outer layer - Sharper magenta */}
       <Points ref={pointsRef} positions={corePositions} stride={3} frustumCulled={false}>
         <PointMaterial
           transparent
-          color={new THREE.Color(0xd946ef)} // Brighter fuchsia
-          size={0.025} // Slightly smaller for a sharper "stardust" look
+          color={new THREE.Color(0xd946ef)}
+          size={0.025}
           sizeAttenuation={true}
           depthWrite={false}
           blending={THREE.AdditiveBlending}
@@ -148,12 +139,11 @@ const CoreGlobeParticles = () => {
         />
       </Points>
 
-      {/* Secondary inner layer - Vibrant cyan */}
       <Points positions={secondLayerPositions} stride={3} frustumCulled={false}>
         <PointMaterial
           transparent
           color={new THREE.Color(0x06b6d4)}
-          size={0.035} // Slightly larger to create depth contrast
+          size={0.035}
           sizeAttenuation={true}
           depthWrite={false}
           blending={THREE.AdditiveBlending}
@@ -163,24 +153,20 @@ const CoreGlobeParticles = () => {
     </group>
   );
 };
+
 // ============================================================================
-// LIGHTING SETUP - Professional multi-light configuration
+// LIGHTING
 // ============================================================================
 const LightingSetup = () => {
   return (
     <>
-      {/* Ambient light - soft overall illumination */}
       <ambientLight intensity={0.5} color={new THREE.Color(0xb3b3d9)} />
-
-      {/* Directional light - main light source */}
       <directionalLight
         position={[5, 3, 5]}
         intensity={1.2}
         color={new THREE.Color(0xffffff)}
         castShadow={false}
       />
-
-      {/* Purple rim light - adds depth and drama */}
       <pointLight
         position={[-6, 2, -3]}
         intensity={0.8}
@@ -188,8 +174,6 @@ const LightingSetup = () => {
         distance={15}
         decay={2}
       />
-
-      {/* Blue rim light - complementary glow */}
       <pointLight
         position={[6, -2, 3]}
         intensity={0.6}
@@ -197,8 +181,6 @@ const LightingSetup = () => {
         distance={15}
         decay={2}
       />
-
-      {/* Soft point light - fills shadows */}
       <pointLight
         position={[0, 0, 6]}
         intensity={0.4}
@@ -211,14 +193,16 @@ const LightingSetup = () => {
 };
 
 // ============================================================================
-// CAMERA CONTROLLER - Smooth mouse parallax effect
+// OPTIMIZED CAMERA PARALLAX - Only on desktop, throttled
 // ============================================================================
-const CameraParallax = () => {
+const CameraParallax = ({ enabled }: { enabled: boolean }) => {
   const { camera } = useThree();
   const mouseRef = useRef({ x: 0, y: 0 });
   const targetCameraRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
+    if (!enabled) return;
+
     const handleMouseMove = (e: MouseEvent) => {
       mouseRef.current.x = (e.clientX / window.innerWidth) * 2 - 1;
       mouseRef.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
@@ -226,25 +210,26 @@ const CameraParallax = () => {
 
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  }, [enabled]);
 
   useFrame(() => {
-    // Subtle parallax - very gentle movement
-    const parallaxStrength = 0.15;
+    if (!enabled) return;
+
+    const parallaxStrength = 0.1; // Reduced from 0.15
     targetCameraRef.current.x = mouseRef.current.x * parallaxStrength;
     targetCameraRef.current.y = mouseRef.current.y * parallaxStrength;
 
-    camera.position.x += (targetCameraRef.current.x - camera.position.x) * 0.1;
-    camera.position.y += (targetCameraRef.current.y - camera.position.y) * 0.1;
+    camera.position.x += (targetCameraRef.current.x - camera.position.x) * 0.08;
+    camera.position.y += (targetCameraRef.current.y - camera.position.y) * 0.08;
   });
 
   return null;
 };
 
 // ============================================================================
-// SCENE SETUP - Canvas configuration with post-processing
+// GLOBE SCENE
 // ============================================================================
-const GlobeScene = () => {
+const GlobeScene = ({ enableParallax }: { enableParallax: boolean }) => {
   return (
     <Canvas
       camera={{
@@ -252,134 +237,162 @@ const GlobeScene = () => {
         fov: 55,
         far: 1000,
       }}
-      dpr={[1, 1.5]}
+      dpr={[1, 1.2]} // Reduced from [1, 1.5]
       gl={{
         antialias: true,
         alpha: true,
         powerPreference: 'high-performance',
         toneMappingExposure: 1.8,
+        precision: 'mediump', // Added for mobile optimization
       }}
     >
-      {/* Fog for depth perception */}
       <fog attach="fog" args={['#05050f', 5, 12]} />
-
-      {/* Lighting */}
       <LightingSetup />
-
-      {/* Globe components */}
       <Atmosphere />
       <CoreGlobeParticles />
       <FloatingParticles />
-
-      {/* Camera parallax effect */}
-      <CameraParallax />
-
-      {/* Preload assets */}
+      <CameraParallax enabled={enableParallax} />
       <Preload all />
     </Canvas>
   );
 };
-
 // ============================================================================
-// MAIN HERO COMPONENT
+// MAIN HERO COMPONENT - WITH ABOUT EMERGENCE
 // ============================================================================
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const globeRef = useRef<HTMLDivElement>(null);
+  const [enableParallax, setEnableParallax] = useState(true);
 
-useGSAP(() => {
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top top", 
-        end: "+=100%",    
-        scrub: 0.5,           
-        pin: true,        
-        pinSpacing: false,
-        anticipatePin: 1,     
-      }
-    });
+  useEffect(() => {
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    setEnableParallax(!isMobile);
+  }, []);
+useGSAP(
+    () => {
 
-    // 1. THE FIX: duration 0.3 means this finishes in the first 30% of the scroll!
-    tl.to(textRef.current, {
-      y: -150,           // Move it further up and out of the way
-      opacity: 0,
-      scale: 0.9,
-      duration: 0.3,     // Finishes fast to avoid collision
-      ease: "power2.in"  // Accelerates out of view
-    }, 0);
+      gsap.set(globeRef.current, { 
+        xPercent: -40, 
+        left: "50%" 
+      });
 
-    // 2. The globe takes the full 100% of the scroll to scale up and fade
-    tl.to(globeRef.current, {
-      scale: 1.6,
-      opacity: 0,
-      y: 50,
-      duration: 1,       // Full duration of the scroll
-      ease: "none"
-    }, 0);
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top top',
+          end: '+=150%', 
+          scrub: 5, // Keep this as 'true' for Lenis
+          pin: true,
+          pinSpacing: false,
+          anticipatePin: 4,
 
-  }, { scope: containerRef });
+        },
+      });
+
+      // Text exits quickly
+      tl.to(
+        textRef.current,
+        {
+          y: -200,
+          opacity: 0,
+          scale: 0.85,
+          duration: 2,
+          ease: 'power2.in',
+          force3D: true,
+        },
+        0
+      );
+
+      // Globe scales up and fades
+      tl.to(
+        globeRef.current,
+        {
+          scale: 1,
+          opacity: 0,
+          y:10, // GSAP will automatically keep the xPercent: -50 applied alongside this!
+          duration: 8,
+          ease: 'power.inOut',
+          force3D: true,
+        },
+        0
+      );
+    },
+    { scope: containerRef }
+  );
+
   return (
-    <div id="home" ref={containerRef} className="relative min-h-screen w-full bg-[#05050f] overflow-hidden flex flex-col items-center pt-32">
-      
-      {/* Ambient Background Stars */}
-      <div 
-        className="absolute inset-0 opacity-20 pointer-events-none z-0"
-        style={{ 
-          backgroundImage: 'radial-gradient(circle at center, white 1px, transparent 1px)', 
-          backgroundSize: '100px 100px' 
+    <div
+      id="home"
+      ref={containerRef}
+      className="relative min-h-screen w-full bg-[#05050f] flex flex-col items-center pt-32"
+    >
+      {/* Background Stars - optimized */}
+      <div
+        className="absolute inset-0 opacity-15 pointer-events-none z-0 transform-gpu"
+        style={{
+          backgroundImage: 'radial-gradient(circle at center, white 1px, transparent 1px)',
+          backgroundSize: '150px 150px',
         }}
       ></div>
 
-      {/* Text Content - Wrapped in textRef for scrolling animation */}
-      <div ref={textRef} className="relative z-20 flex flex-col items-center text-center px-4 w-full max-w-4xl mx-auto mt-4">
-        
-        {/* Dark semi-transparent backdrop for text readability */}
-        <div className="absolute -inset-8 bg-gradient-to-b from-black/40 via-black/20 to-transparent rounded-3xl blur-2xl -z-10"></div>
-        
+      {/* Text Content */}
+      <div
+        ref={textRef}
+        className="relative z-20 flex flex-col items-center text-center px-4 w-full max-w-4xl mx-auto mt-4 will-change-transform"
+      >
+        <div className="absolute -inset-8 bg-gradient-to-b from-black/40 via-black/20 to-transparent rounded-3xl blur-2xl -z-10 transform-gpu"></div>
+
         <div className="inline-flex items-center mb-6 px-4 py-1.5 rounded-full bg-black/40 border border-white/20 backdrop-blur-md text-gray-100 text-xs font-medium tracking-wide">
           <Sparkles className="w-3 h-3 text-fuchsia-400 mr-2" />
           Premium IT Solutions · Est. 2012
         </div>
 
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white tracking-tight mb-6 leading-[1.1] font-sans" style={{
-          textShadow: '0 0 40px rgba(0,0,0,0.8), 0 0 20px rgba(139, 92, 246, 0.4), 0 8px 32px rgba(0,0,0,0.5)'
-        }}>
+        <h1
+          className="text-5xl md:text-7xl lg:text-8xl font-bold text-white tracking-tight mb-6 leading-[1.1] font-sans"
+          style={{
+            textShadow:
+              '0 0 40px rgba(0,0,0,0.8), 0 0 20px rgba(139, 92, 246, 0.4), 0 8px 32px rgba(0,0,0,0.5)',
+          }}
+        >
           Innovating the <br className="hidden md:block" />
           Future Through <br className="hidden md:block" />
           Technology
         </h1>
 
-    <p className="text-transparent bg-clip-text bg-gradient-to-r from-white via-amber-400 to-white text-lg md:text-xl max-w-2xl mb-10 leading-relaxed mx-auto font-medium" style={{
-  textShadow: '0 4px 16px rgba(0,0,0,0.5)'
-}}>
-  We build innovative software, cloud, and AI solutions that help businesses scale, streamline operations, and achieve sustainable growth.
-</p>
+        <p
+          className="text-transparent bg-clip-text bg-gradient-to-r from-white via-amber-400 to-white text-lg md:text-xl max-w-2xl mb-10 leading-relaxed mx-auto font-medium"
+          style={{
+            textShadow: '0 4px 16px rgba(0,0,0,0.5)',
+          }}
+        >
+          We build innovative software, cloud, and AI solutions that help businesses scale, streamline
+          operations, and achieve sustainable growth.
+        </p>
 
         <div className="flex items-center gap-4 z-20">
-          <button className="px-8 py-3.5 rounded-full bg-white text-black font-semibold transition-all hover:scale-105 flex items-center gap-2 shadow-[0_0_30px_rgba(255,255,255,0.3)]">
+          <button className="px-8 py-3.5 rounded-full bg-white text-black font-semibold transition-all hover:scale-105 flex items-center gap-2 shadow-[0_0_30px_rgba(255,255,255,0.3)] transform-gpu">
             Get Started <ArrowRight className="w-4 h-4" />
           </button>
-          <button className="px-8 py-3.5 rounded-full bg-black/40 text-white font-semibold border border-white/30 transition-all hover:bg-black/60 backdrop-blur-md flex items-center gap-2">
+          <button className="px-8 py-3.5 rounded-full bg-black/40 text-white font-semibold border border-white/30 transition-all hover:bg-black/60 backdrop-blur-md flex items-center gap-2 transform-gpu">
             Contact Sales <ArrowRight className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      {/* 3D Globe Container - Wrapped in globeRef for scrolling animation */}
-      <div ref={globeRef} className="absolute bottom-[-30%] md:bottom-[-40%] left-1/2 -translate-x-1/2 w-[150vw] md:w-[100vw] h-[800px] md:h-[1000px] z-10 pointer-events-none flex justify-center items-center">
-        
-        {/* Massive Purple CSS Glow behind the globe */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-fuchsia-600/40 rounded-full blur-[150px]"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-600/50 rounded-full blur-[120px]"></div>
+      {/* 3D Globe Container */}
+      <div
+        ref={globeRef}
+        // 2. THE FIX: Notice that 'left-1/2' and '-translate-x-1/2' are completely removed from here!
+        className="absolute bottom-[-30%] md:bottom-[-40%] w-[150vw] md:w-[100vw] h-[800px] md:h-[1000px] z-10 pointer-events-none flex justify-center items-center will-change-transform"
+      >
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-fuchsia-600/40 rounded-full blur-[150px] transform-gpu"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-600/50 rounded-full blur-[120px] transform-gpu"></div>
 
-        {/* Three.js Canvas */}
         <div className="w-full h-full">
-          <GlobeScene />
+          <GlobeScene enableParallax={enableParallax} />
         </div>
       </div>
-      
     </div>
   );
 }

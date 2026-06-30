@@ -37,7 +37,6 @@ const cultureValues = [
 ];
 
 const jobs = [
-  { title: "Senior Full-Stack Engineer", location: "Remote · Global", type: "Full-time" },
   { title: "AI / ML Engineer", location: "San Francisco · Hybrid", type: "Full-time" },
   { title: "Cloud Architect", location: "London · Hybrid", type: "Full-time" },
   { title: "Cybersecurity Analyst", location: "Remote · EMEA", type: "Full-time" },

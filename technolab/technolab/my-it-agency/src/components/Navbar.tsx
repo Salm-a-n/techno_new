@@ -124,7 +124,7 @@ export default function Navbar() {
   
   {/* Add your public image here */}
   <img 
-    src="/newlogo.png" 
+    src="/logo.png" 
     alt="TechnoTech Logo" 
     className="w-8 h-8 object-contain group-hover:scale-105 transition-transform duration-300" 
   />

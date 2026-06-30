@@ -54,7 +54,7 @@ const services = [
     category: "Connectivity",
     icon: Network,
     badgeIcon: Server,
-    title: "Networking & Infra",
+    title: "Networking & Infrastructure",
     description: "High-throughput networks and resilient infrastructure.",
     features: ["Enterprise Routing", "Data Center Setup", "Network Security"],
     color: "from-violet-400 to-purple-500",
@@ -349,10 +349,14 @@ export default function Services() {
                       {service.description}
                     </p>
 
-                    <div className="flex items-center gap-3 text-sm font-semibold text-white group cursor-pointer w-fit">
-                      Explore Solution 
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform text-gray-500 group-hover:text-white" />
-                    </div>
+                    <a 
+  href="#contact" 
+  className="flex items-center gap-3 text-sm font-semibold text-white group cursor-pointer w-fit"
+>
+  Explore Solution
+  <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform text-gray-500 group-hover:text-white" />
+</a>
+
                   </div>
 
                   {/* PREMIUM CARD BLOCK */}

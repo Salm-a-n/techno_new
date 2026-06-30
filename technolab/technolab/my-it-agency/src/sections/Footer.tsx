@@ -28,7 +28,7 @@ export default function Footer() {
             <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-6">
               
               <img 
-                src="/newlogo.png" 
+                src="/logo.png" 
                 alt="TechnoTech Logo" 
                 className="w-6 h-6 md:w-10 md:h-10 object-contain shrink-0" 
               />
@@ -133,10 +133,11 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar: Copyright & Legal */}
-        <div className="pt-4 md:pt-8 border-t border-white/10 flex flex-row items-center justify-between gap-2 md:gap-4">
-          <p className="text-gray-500 text-[7px] sm:text-[8px] md:text-sm text-left">
-            © {currentYear} TechnoTech Technologies. All rights reserved.
-          </p>
+        <div className="pt-4 md:pt-8 border-t border-white/10 flex justify-center">
+  <p className="text-gray-500 text-[7px] sm:text-[8px] md:text-sm text-center">
+    © {currentYear} TechnoTech Technologies. All rights reserved.
+  </p>
+
           {/* <div className="flex gap-2 md:gap-6 text-[7px] sm:text-[8px] md:text-sm text-gray-500 shrink-0">
             <a href="#" className="hover:text-white transition-colors">Privacy</a>
             <a href="#" className="hover:text-white transition-colors">Terms</a>

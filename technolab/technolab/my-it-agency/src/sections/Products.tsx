@@ -14,7 +14,7 @@ const products = [
     id: "erp",
     tag: "OPERATIONS",
     title: "ERP Solutions",
-    description: "Unified resource planning with real-time intelligence.",
+    description: "Streamline operations with unified ERP solutions. Real-time insights, automated workflows, and scalable modules empower enterprises to optimize resources, enhance collaboration, and achieve sustainable growth across departments.",
     icon: Database,
     color: "from-blue-400 to-cyan-400",
     hexColor: "#22d3ee",
@@ -25,7 +25,7 @@ const products = [
     id: "crm",
     tag: "REVENUE",
     title: "CRM Systems",
-    description: "Sales, service and marketing on one elegant surface.",
+    description: "Centralize customer data with CRM systems. Drive sales, marketing, and service efficiency through automation, analytics, and personalized engagement, building loyalty and maximizing revenue opportunities across every channel.",
     icon: LineChart,
     color: "from-emerald-400 to-teal-400",
     hexColor: "#34d399",
@@ -36,7 +36,7 @@ const products = [
     id: "ai",
     tag: "INTELLIGENCE",
     title: "AI Business Tools",
-    description: "Co-pilots and agents that automate the busywork.",
+    description: "Automate tasks with AI business tools. Predictive analytics, intelligent agents, and machine learning streamline workflows, uncover insights, and empower smarter decisions for agile, efficient, and innovative organizations.",
     icon: Bot,
     color: "from-fuchsia-400 to-purple-500",
     hexColor: "#d946ef",
@@ -47,36 +47,28 @@ const products = [
     id: "cloud",
     tag: "INFRA",
     title: "Cloud Platforms",
-    description: "Elastic infrastructure with zero ops overhead.",
+    description: "Scale seamlessly with cloud platforms. Elastic infrastructure, automated provisioning, and secure architecture reduce overhead, support hybrid strategies, and accelerate innovation while ensuring resilience and operational efficiency globally.",
     icon: Cloud,
     color: "from-indigo-400 to-blue-500",
     hexColor: "#818cf8",
     glowColor: "rgba(99, 102, 241, 0.4)",
     bgGradient: "from-indigo-500/20 to-blue-500/20"
   },
+  
   {
-    id: "suite",
-    tag: "WORKFLOW",
-    title: "Enterprise Suite",
-    description: "Modular apps for complex global organizations.",
-    icon: Layers,
-    color: "from-orange-400 to-red-500",
-    hexColor: "#f97316",
-    glowColor: "rgba(249, 115, 22, 0.4)",
-    bgGradient: "from-orange-500/20 to-red-500/20"
-  },
-  {
-    id: "security",
-    tag: "DEFENSE",
-    title: "Security Systems",
-    description: "Adaptive threat protection across every layer.",
-    icon: ShieldCheck,
-    color: "from-rose-400 to-pink-500",
-    hexColor: "#fb7185",
-    glowColor: "rgba(244, 63, 94, 0.4)",
-    bgGradient: "from-rose-500/20 to-pink-500/20"
-  }
+  id: "cyber",
+  tag: "DEFENSE",
+  title: "Cyber Solutions",
+  description: "Safeguard enterprises with advanced cyber solutions. AI-driven defense, encryption, and compliance tools protect data, detect threats, and ensure resilience, delivering trust, continuity, and peace of mind globally.",
+  icon: ShieldCheck,
+  color: "from-rose-400 to-pink-500",
+  hexColor: "#fb7185",
+  glowColor: "rgba(244, 63, 94, 0.4)",
+  bgGradient: "from-rose-500/20 to-pink-500/20"
+}
+
 ];
+
 
 // ============================================================================
 // COMPONENT
@@ -228,11 +220,15 @@ export default function Products() {
 
               {/* --- Card Content Bottom --- */}
               <div className="relative z-10 w-full pt-6 border-t border-white/10">
-                <button className="w-full py-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-colors flex items-center justify-center gap-2 text-white font-medium text-sm">
-                  Explore {product.tag.toLowerCase()}
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
+  <a 
+    href="#contact"
+    className="w-full py-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-colors flex items-center justify-center gap-2 text-white font-medium text-sm"
+  >
+    Explore {product.tag.toLowerCase()}
+    <ArrowRight className="w-4 h-4" />
+  </a>
+</div>
+
               
             </div>
           ))}
